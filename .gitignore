@@ -1,2 +1,5 @@
 datasets/
 .ipynb_checkpoints/
+tests.ipynb
+figures/
+debug.log
