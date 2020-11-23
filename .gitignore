@@ -3,3 +3,4 @@ datasets/
 tests.ipynb
 figures/
 debug.log
+*.vscode/
