@@ -60,7 +60,7 @@ def print_cifar10_classes():
         print(f'  {i}- {classes[i]}')
 
 
-def get_dataset_mnist(verbose=True, show_random_image=True):
+def get_dataset_mnist(verbose=True, show_images=True):
     (x_train_mnist, y_train_mnist), (x_test_mnist, y_test_mnist) = tf.keras.datasets.mnist.load_data()
     x_train_mnist = x_train_mnist.reshape((x_train_mnist.shape[0], 28, 28, 1)).astype('float32')
     x_test_mnist = x_test_mnist.reshape((x_test_mnist.shape[0], 28, 28, 1)).astype('float32')
@@ -70,19 +70,20 @@ def get_dataset_mnist(verbose=True, show_random_image=True):
     if verbose:
         print_dataset_info('MNIST', x_train_mnist, y_train_mnist, x_test_mnist,
                         y_test_mnist)
-    if show_random_image:
+    if show_images:
         show_random_image('MNIST', x_train_mnist, y_train_mnist, x_test_mnist,
-                        y_test_mnist)
+                          y_test_mnist)
 
     result_dict = {
         'train_data': (x_train_mnist, y_train_mnist),
         'test_data': (x_test_mnist, y_test_mnist),
-        'classes': classes_mnist
+        'classes': classes_mnist,
+        'input_shape': input_shape_mnist
     }
     return result_dict
 
 
-def get_dataset_cifar10(verbose=True, show_random_image=True):
+def get_dataset_cifar10(verbose=True, show_images=True):
     (x_train_cifar10, y_train_cifar10), (x_test_cifar10, y_test_cifar10) = tf.keras.datasets.cifar10.load_data()
     x_train_cifar10 = x_train_cifar10.astype('float32')
     x_test_cifar10 = x_test_cifar10.astype('float32')
@@ -92,12 +93,13 @@ def get_dataset_cifar10(verbose=True, show_random_image=True):
     if verbose:
         print_dataset_info('CIFAR10', x_train_cifar10, y_train_cifar10, x_test_cifar10, y_test_cifar10)
         print_cifar10_classes()
-    if show_random_image:
+    if show_images:
         show_random_image('CIFAR10', x_train_cifar10, y_train_cifar10, x_test_cifar10, y_test_cifar10)
 
     result_dict = {
         'train_data': (x_train_cifar10, y_train_cifar10),
         'test_data': (x_test_cifar10, y_test_cifar10),
-        'classes': classes_cifar10
+        'classes': classes_cifar10,
+        'input_shape': input_shape_cifar10
     }
     return result_dict
