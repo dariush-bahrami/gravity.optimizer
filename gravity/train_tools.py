@@ -29,10 +29,15 @@ def save_run_info(model, history, optimizer, dataset: str, comment=None):
     # Load Data
     model_name = model.name
     optimizer_name = optimizer.get_config()['name']
-    model_config = model.get_config()
-    history_dict = history.history
+    model_config = model.to_json()
+    history_dict = {}
+    epochs = len(history.history['loss'])
+    history_dict['epochs'] = list(range(1, epochs+1))
+    history_dict.update(history.history)
     optimizer_config = optimizer.get_config()
-
+    for i in optimizer_config:
+        if type(optimizer_config[i]) not in (str, float) :
+            optimizer_config[i] = round(float(optimizer_config[i]), 4)
     # Serializing
     max_acc = round(max(history_dict['accuracy']), 2)
     max_val_acc = round(max(history_dict['val_accuracy']), 2)
@@ -49,3 +54,4 @@ def save_run_info(model, history, optimizer, dataset: str, comment=None):
                           json.dumps(optimizer_config, indent=4))
         if comment:
             zip_file.writestr('comment.txt', comment)
+    print('save_run_info completed')

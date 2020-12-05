@@ -3,7 +3,7 @@ import tensorflow as tf
 
 
 class Gravity(tf.keras.optimizers.Optimizer):
-    def __init__(self, learning_rate=0.01, alpha=4e-3, beta=0.9, name="Gravity", **kwargs):
+    def __init__(self, learning_rate=0.1, alpha=0.01, beta=0.9, name="Gravity", **kwargs):
         super(Gravity, self).__init__(name, **kwargs)
         self._set_hyper('learning_rate', kwargs.get('lr', learning_rate))
         self._set_hyper('decay', self._initial_decay)
@@ -13,7 +13,7 @@ class Gravity(tf.keras.optimizers.Optimizer):
     def _create_slots(self, var_list):
         alpha = self._get_hyper("alpha")
         stddev = alpha/self.learning_rate
-        initializer = tf.keras.initializers.TruncatedNormal(mean=0.0, stddev=stddev, seed=None)
+        initializer = tf.keras.initializers.RandomNormal(mean=0.0, stddev=stddev, seed=None)
         for var in var_list:
             self.add_slot(var, "velocity", initializer=initializer)
 
@@ -22,7 +22,9 @@ class Gravity(tf.keras.optimizers.Optimizer):
         # Get Data
         var_dtype = var.dtype.base_dtype
         lr_t = self._decayed_lr(var_dtype) # handle learning rate decay
-        beta = self._get_hyper("beta", var_dtype)
+        beta_hat = self._get_hyper("beta", var_dtype)
+        t = tf.cast(self.iterations, float)
+        beta = (beta_hat*t + 1 )/(t + 2)
         velocity = self.get_slot(var, "velocity")
 
         # Calculations
