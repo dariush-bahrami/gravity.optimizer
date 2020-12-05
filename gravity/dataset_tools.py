@@ -1,4 +1,4 @@
-"""This module contain functions related to retriving datasets information"""
+"""This module contain functions related to benchmark datasets"""
 import numpy as np
 import matplotlib.pyplot as plt
 

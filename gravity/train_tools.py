@@ -32,11 +32,11 @@ def save_run_info(model, history, optimizer, dataset: str, comment=None):
     model_config = model.to_json()
     history_dict = {}
     epochs = len(history.history['loss'])
-    history_dict['epochs'] = list(range(1, epochs+1))
+    history_dict['epochs'] = list(range(1, epochs + 1))
     history_dict.update(history.history)
     optimizer_config = optimizer.get_config()
     for i in optimizer_config:
-        if type(optimizer_config[i]) not in (str, float) :
+        if type(optimizer_config[i]) not in (str, float):
             optimizer_config[i] = round(float(optimizer_config[i]), 4)
     # Serializing
     max_acc = round(max(history_dict['accuracy']), 2)

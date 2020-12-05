@@ -28,10 +28,8 @@ class Gravity(tf.keras.optimizers.Optimizer):
         velocity = self.get_slot(var, "velocity")
 
         # Calculations
-        max_grad = tf.math.reduce_max(grad)
-        min_grad = tf.math.reduce_min(grad)
-        max_step_grad = 1 / (max_grad-min_grad+self.epsilon)
-        gradient_term = grad / (1 + (grad/(max_step_grad+self.epsilon))**2)
+        max_step_grad = 1/tf.math.reduce_max(tf.math.abs(grad))
+        gradient_term = grad / (1 + (grad/max_step_grad)**2)
 
         # update variables
         updated_velocity = velocity.assign(beta*velocity + (1-beta)*gradient_term) 
