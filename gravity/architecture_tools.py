@@ -38,6 +38,43 @@ def get_vgg16(classes=10,
     return model_vgg16
 
 
+def get_vgg19(classes=10,
+              input_shape=(32, 23, 3),
+              drop_out_rate=0,
+              print_summary=False):
+    base_model = tf.keras.applications.VGG19(
+        include_top=True,
+        weights=None,
+        input_tensor=None,
+        input_shape=input_shape,
+        pooling=None,
+        classes=classes,
+        classifier_activation=None,
+    )
+    fc1 = base_model.layers[-3]
+    fc2 = base_model.layers[-2]
+    predictions = base_model.layers[-1]
+
+    # Create the dropout layers
+    dropout1 = tf.keras.layers.Dropout(drop_out_rate)
+    dropout2 = tf.keras.layers.Dropout(drop_out_rate)
+
+    # Reconnect the layers
+    x = dropout1(fc1.output)
+    x = fc2(x)
+    x = dropout2(x)
+    predictors = predictions(x)
+
+    # Create a new model
+    model_vgg19 = tf.keras.models.Model(base_model.input,
+                                        predictors,
+                                        name='vgg19')
+
+    if print_summary:
+        model_vgg19.summary()
+    return model_vgg19
+
+
 def resize_model_input_size(base_model,
                             target_size=(32, 32),
                             data_shape=(28, 28, 1),
