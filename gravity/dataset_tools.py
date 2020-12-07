@@ -60,16 +60,39 @@ def print_cifar10_classes():
         print(f'  {i}- {classes[i]}')
 
 
+def print_fashion_mnist_classes():
+    num_classes = 10
+    classes = {
+        0: 'T-shirt/top',
+        1: 'Trouser',
+        2: 'Pullover',
+        3: 'Dress',
+        4: 'Coat',
+        5: 'Sandal',
+        6: 'Shirt',
+        7: 'Sneaker',
+        8: 'Bag',
+        9: 'Ankle boot'
+    }
+    print('Fashion MNIST Classes:')
+    for i in range(num_classes):
+        print(f'  {i}- {classes[i]}')
+
+
 def get_dataset_mnist(verbose=True, show_images=True):
-    (x_train_mnist, y_train_mnist), (x_test_mnist, y_test_mnist) = tf.keras.datasets.mnist.load_data()
-    x_train_mnist = x_train_mnist.reshape((x_train_mnist.shape[0], 28, 28, 1)).astype('float32')
-    x_test_mnist = x_test_mnist.reshape((x_test_mnist.shape[0], 28, 28, 1)).astype('float32')
+    (x_train_mnist,
+     y_train_mnist), (x_test_mnist,
+                      y_test_mnist) = tf.keras.datasets.mnist.load_data()
+    x_train_mnist = x_train_mnist.reshape(
+        (x_train_mnist.shape[0], 28, 28, 1)).astype('float32')
+    x_test_mnist = x_test_mnist.reshape(
+        (x_test_mnist.shape[0], 28, 28, 1)).astype('float32')
     x_train_mnist, x_test_mnist = x_train_mnist / 255.0, x_test_mnist / 255.0
     input_shape_mnist = x_train_mnist.shape[1:]
     classes_mnist = 10
     if verbose:
         print_dataset_info('MNIST', x_train_mnist, y_train_mnist, x_test_mnist,
-                        y_test_mnist)
+                           y_test_mnist)
     if show_images:
         show_random_image('MNIST', x_train_mnist, y_train_mnist, x_test_mnist,
                           y_test_mnist)
@@ -84,22 +107,56 @@ def get_dataset_mnist(verbose=True, show_images=True):
 
 
 def get_dataset_cifar10(verbose=True, show_images=True):
-    (x_train_cifar10, y_train_cifar10), (x_test_cifar10, y_test_cifar10) = tf.keras.datasets.cifar10.load_data()
+    (x_train_cifar10, y_train_cifar10), (
+        x_test_cifar10,
+        y_test_cifar10) = tf.keras.datasets.cifar10.load_data()
     x_train_cifar10 = x_train_cifar10.astype('float32')
     x_test_cifar10 = x_test_cifar10.astype('float32')
-    x_train_cifar10, x_test_cifar10= x_train_cifar10 / 255, x_test_cifar10 / 255
+    x_train_cifar10, x_test_cifar10 = x_train_cifar10 / 255, x_test_cifar10 / 255
     input_shape_cifar10 = x_train_cifar10.shape[1:]
     classes_cifar10 = 10
     if verbose:
-        print_dataset_info('CIFAR10', x_train_cifar10, y_train_cifar10, x_test_cifar10, y_test_cifar10)
+        print_dataset_info('CIFAR10', x_train_cifar10, y_train_cifar10,
+                           x_test_cifar10, y_test_cifar10)
         print_cifar10_classes()
     if show_images:
-        show_random_image('CIFAR10', x_train_cifar10, y_train_cifar10, x_test_cifar10, y_test_cifar10)
+        show_random_image('CIFAR10', x_train_cifar10, y_train_cifar10,
+                          x_test_cifar10, y_test_cifar10)
 
     result_dict = {
         'train_data': (x_train_cifar10, y_train_cifar10),
         'test_data': (x_test_cifar10, y_test_cifar10),
         'classes': classes_cifar10,
         'input_shape': input_shape_cifar10
+    }
+    return result_dict
+
+
+def get_dataset_fashion_mnist(verbose=True, show_images=True):
+    (x_train_fashion_mnist, y_train_fashion_mnist), (
+        x_test_fashion_mnist,
+        y_test_fashion_mnist) = tf.keras.datasets.fashion_mnist.load_data()
+    x_train_fashion_mnist = x_train_fashion_mnist.reshape(
+        (x_train_fashion_mnist.shape[0], 28, 28, 1)).astype('float32')
+    x_test_fashion_mnist = x_test_fashion_mnist.reshape(
+        (x_test_fashion_mnist.shape[0], 28, 28, 1)).astype('float32')
+    x_train_fashion_mnist, x_test_fashion_mnist = x_train_fashion_mnist / 255.0, x_test_fashion_mnist / 255.0
+    input_shape_fashion_mnist = x_train_fashion_mnist.shape[1:]
+    classes_fashion_mnist = 10
+    if verbose:
+        print_dataset_info('Fashion MNIST', x_train_fashion_mnist,
+                           y_train_fashion_mnist, x_test_fashion_mnist,
+                           y_test_mnist)
+        print_fashion_mnist_classes()
+    if show_images:
+        show_random_image('Fashion MNIST', x_train_fashion_mnist,
+                          y_train_fashion_mnist, x_test_fashion_mnist,
+                          y_test_fashion_mnist)
+
+    result_dict = {
+        'train_data': (x_train_fashion_mnist, y_train_fashion_mnist),
+        'test_data': (x_test_fashion_mnist, y_test_fashion_mnist),
+        'classes': classes_fashion_mnist,
+        'input_shape': input_shape_fashion_mnist
     }
     return result_dict
