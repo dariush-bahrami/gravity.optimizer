@@ -146,7 +146,7 @@ def get_dataset_fashion_mnist(verbose=True, show_images=True):
     if verbose:
         print_dataset_info('Fashion MNIST', x_train_fashion_mnist,
                            y_train_fashion_mnist, x_test_fashion_mnist,
-                           y_test_mnist)
+                           y_test_fashion_mnist)
         print_fashion_mnist_classes()
     if show_images:
         show_random_image('Fashion MNIST', x_train_fashion_mnist,
