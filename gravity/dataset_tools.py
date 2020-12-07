@@ -160,3 +160,36 @@ def get_dataset_fashion_mnist(verbose=True, show_images=True):
         'input_shape': input_shape_fashion_mnist
     }
     return result_dict
+
+
+def get_dataset_cifar100(label_mode='fine', verbose=True, show_images=True):
+    if label_mode == 'fine':
+        classes_cifar100 = 100
+    elif label_mode == 'coarse':
+        classes_cifar100 = 20
+    else:
+        raise ValueError(f'Invalid label_mode: {label_mode}')
+
+    (x_train_cifar100, y_train_cifar100), (
+        x_test_cifar100,
+        y_test_cifar100) = tf.keras.datasets.cifar100.load_data(
+            label_mode=label_mode)
+    x_train_cifar100 = x_train_cifar100.astype('float32')
+    x_test_cifar100 = x_test_cifar100.astype('float32')
+    x_train_cifar100, x_test_cifar100 = x_train_cifar100 / 255, x_test_cifar100 / 255
+    input_shape_cifar100 = x_train_cifar100.shape[1:]
+
+    if verbose:
+        print_dataset_info('CIFAR100', x_train_cifar100, y_train_cifar100,
+                           x_test_cifar100, y_test_cifar100)
+    if show_images:
+        show_random_image('CIFAR100', x_train_cifar100, y_train_cifar100,
+                          x_test_cifar100, y_test_cifar100)
+
+    result_dict = {
+        'train_data': (x_train_cifar100, y_train_cifar100),
+        'test_data': (x_test_cifar100, y_test_cifar100),
+        'classes': classes_cifar100,
+        'input_shape': input_shape_cifar100
+    }
+    return result_dict
