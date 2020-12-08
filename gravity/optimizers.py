@@ -14,6 +14,7 @@ class Gravity(tf.keras.optimizers.Optimizer):
         alpha = self._get_hyper("alpha")
         stddev = alpha/self.learning_rate
         initializer = tf.keras.initializers.RandomNormal(mean=0.0, stddev=stddev, seed=None)
+        # initializer = 'zeros'
         for var in var_list:
             self.add_slot(var, "velocity", initializer=initializer)
 
@@ -44,6 +45,7 @@ class Gravity(tf.keras.optimizers.Optimizer):
         config.update({
             'learning_rate': self._serialize_hyperparameter('learning_rate'),
             'decay': self._serialize_hyperparameter('decay'),
+            'alpha': self._serialize_hyperparameter('alpha'),
             'beta': self._serialize_hyperparameter('beta'),
             'epsilon': self.epsilon,
         })
