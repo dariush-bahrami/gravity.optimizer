@@ -47,28 +47,36 @@ we can do what Galileo did by changing $\theta$ in a way that help us to reach m
 **Equation 18:** $\Delta W = \frac{-lg}{1+(\frac{g}{m})^2}$
 lets look at effect of m in plot:
 ![Gravity m Comparison](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials/gravity_math_materials/gravity_plot_m_compare.svg)
-as can be seen m actually is gradient which at that maximum step will occur. in math language if:
+as can be seen m actually is gradient which at that, maximum step will occur. in math language if:
 $f(g)=\Delta W = \frac{-lg}{1+(\frac{g}{m})^2}$ and $f'(g)=\frac{\partial f}{\partial g}$
 then:
  $f'(m)=0$
-this parameter enable us to tweak angle of inclined plane in our benefit. the maximum step for given $m$ and $l$ will be:
+this parameter enables us to tweak angle of inclined plane in our benefit. the maximum step for given $m$ and $l$ will be:
 **Equation 19:** $\Delta W_{max} = \frac{lm}{2}$
 $m$ has two effects; first one is its effect on linear part of the curve and second one is maximum step value. higher $m$ leads to wider linear part and also bigger step for weights with big $g$. in other words by increasing $m$ wider range of gradients will be treated linearly and weights with larger gradient value will take larger steps.
+**A Little About Gradient Descent Divergence**
 the cause of divergence in vanilla gradient descent at larger learning rates is weights with large gradients. in fact in gradient descent optimization method infinite amount of $\Delta W$ is possible! one common scenario in gradient descent divergence is as follow:
-1. wrong weight has a large gradient (_because it is wrong_)
-2. wrong weight takes bigger step relative to others (_linearly proportional to their gradient ratio_)
-3. wrong weight gone to far and now is more wrong which leads to another big step
-Sean Harrington in his awesome article *Gradient Descent: High Learning Rates & Divergence* explain this more intuitively:
+1. consider a wight with large gradient
+2. this weight takes bigger step relative to others (_linearly proportional to their gradient ratio_)
+3. after applying optimizer the weight goes too far and now has larger gradient which leads to another big step
+4. steps 1 to 3 will happen forever
+Sean Harrington in his awesome article [*Gradient Descent: High Learning Rates & Divergence*](https://thelaziestprogrammer.com/sharrington/math-of-machine-learning/gradient-descent-learning-rate-too-high) explain this more intuitively:
+![Gradient Descent Divergence](https://github.com/dariush-bahrami/gravity.optimizer/raw/master/materials/gravity_math_materials/gd_divergence.png)
 > 1.  We start at the white point in the “valley”, and calculate the gradient at that point.
     2.  We multiply our learning rates by our gradient and move along this vector to our new point (the slightly greenish point to the left of the white point)
-    * _Because our learning rate was so high, combined with the magnitude of the gradient, we “jumped over” our local minimum._
+        * _Because our learning rate was so high, combined with the magnitude of the gradient, we “jumped over” our local minimum._
     3.  We calculate our gradient at point 2, and make our next move, again, jumping over our local minimum
-    * _Our gradient at point 2 is even greater than the gradient at point 1!_
-    * _Our next step will again, jump over our valley, and we will rinse and repeat for eternity…_
+        * _Our gradient at point 2 is even greater than the gradient at point 1!_
+        * _Our next step will again, jump over our valley, and we will rinse and repeat for eternity…_
     4.  Due to the convex, valley-like curve of our objective function, as we continue to jump from side to side, the gradient at each jump grows higher. Our error increases quadratically with each “jump”, and our algorithm diverges to infinite error.
 
-
-
+**Choosing $m$**
+we want to limit the $\Delta W$ for weights with larger $g$. Given the fact that gradients are constantly changing during training, it is obvious that we can not choose $m$ in advance. So we suggest to select it based on the current gradient matrix. To avoid divergence, a gradient matrix with larger gradients must have a smaller $m$. Based on this we suggest that you select m as follows:
+**Equation 19:** $m=\frac{1}{max(abs(G))}$
+in this equation G is gradient matrix. geometrical interpretation of this equation is as follow:
+1. we found largest gradient and therefore steepest $\theta$
+2. calculate complementary angle correspond to it: $\alpha=\frac{\pi}{2}-\theta$
+3. and choose $m=tan(\alpha)$
 
 
 
