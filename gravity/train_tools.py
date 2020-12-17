@@ -37,7 +37,7 @@ def save_run_info(model, history, optimizer, dataset: str, comment=None):
     optimizer_config = optimizer.get_config()
     for i in optimizer_config:
         if type(optimizer_config[i]) not in (str, float):
-            optimizer_config[i] = round(float(optimizer_config[i]), 4)
+            optimizer_config[i] = f'{float(optimizer_config[i]): .4e}'
     # Serializing
     max_acc = round(max(history_dict['accuracy']), 2)
     max_val_acc = round(max(history_dict['val_accuracy']), 2)
