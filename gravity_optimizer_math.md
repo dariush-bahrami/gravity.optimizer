@@ -88,7 +88,7 @@ Most of the common optimizers in deep learning like momentum, Adam and RMSProp u
 also we define velocity, V, as follow:
 **Equation 21:** $V_{t}=\beta V_{t-1}+(1-\beta)\zeta$
 in equation 21 $\beta$ is a positive real number which $0<\beta<1$. $V_{t}$ is $V$ value in current update step and $V_{t-1}$ is $V$ at previous update step and we initial $V$ with 0 at $t=0$. below figure shows the effect of different values of $\beta$ on loss reduction:
-![beta_tuning_loss.png](materials\gravity_math_materials\beta_tuning_loss.png)
+![beta_tuning_loss.png](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials/gravity_math_materials/beta_tuning_loss.png)
 
 after some experiments involving changing  $\beta$ value we find out the optimal value for $\beta$ in most cases is $0.9$ although in some cases tuning my be necessary. although moving average helped gravity in initial speed but still we can see some delay. for solving this issue we propose an alternative value of $\beta$. any specific value of $\beta$ averages over a number of previous data. actually we can find number of data included in average by below [equation](https://www.youtube.com/watch?v=NxTFlzBjS-4):
 **Equation 22:** $number \ of \ averaged \ data \approx \frac{1}{1-\beta}$
@@ -100,13 +100,13 @@ we tried to use bias correction but at large values of $\beta$ (closer to 1) we 
 value of equation 23 at large $t$ will became $\beta$. but at smaller values correct the value of $\beta$. lets drive the equation 23. by choosing any $\beta$ we will average almost over $\frac{1}{1-\beta}$ data. let say we want to use a variable value of $\beta$ which increase over time and tends to $1$, therefore always average over all data, we call this variable $\hat{\beta}$. for averaging over all data at each step we want to the amount of data that we average on be t+2 because at first step $t=0$ there is 2 data $V_0$ and $V_1$. then we can write:
 $\frac{1}{1-\hat{\beta}}=t+2 \Rightarrow \hat{\beta}=\frac{t+1}{t+2}$
 by increasing amount of $t$ the value of $\beta$ tends to $1$ which will average over all data. below table show the value of $\hat{\beta}$ for different values of $t$:
-![beta_1_table.png](materials\gravity_math_materials\beta_1_table.png)
+![beta_1_table.png](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials\gravity_math_materials\beta_1_table.png)
 as you can see at each step the amount of data that we average on is equal to total available data. for averaging over $\frac{1}{1-\beta}$ we modify above equation as $\hat{\beta} = \frac{\beta t+1}{t+2}$ which is equation 23. now by increasing the value of $t$ the value of $\hat{\beta}$ became more and more close to $\beta$. below table shows the value of $\hat{\beta}$ for $\beta=0.5$:
-![beta_0.5_table.png](materials\gravity_math_materials\beta_0.5_table.png)
+![beta_0.5_table.png](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials\gravity_math_materials\beta_0.5_table.png)
 as you can see always we average over exactly 2 data. but for larger values of $\beta$ it takes more steps to $\hat{\beta}$ became closer to $\beta$:
-![beta_0.75_table.png](materials\gravity_math_materials\beta_0.75_table.png)
+![beta_0.75_table.png](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials\gravity_math_materials\beta_0.75_table.png)
 and for our recommended value of $\beta$, $0.9$, the behaviour of $\hat{\beta}$ is as follow:
-![beta_0.9_table.png](materials\gravity_math_materials\beta_0.9_table.png)
+![beta_0.9_table.png](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials\gravity_math_materials\beta_0.9_table.png)
 in addition to modifying $\beta$ in equation 21 we came out with another solution for increasing the speed of optimizer at early steps  by using non-zero initial $V$.  instead of zero we initialized $V$ with random numbers with normal distribution.
 
 
