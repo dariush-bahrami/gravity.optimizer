@@ -87,28 +87,118 @@ Most of the common optimizers in deep learning like momentum, Adam and RMSProp u
 **Equation 20:** $\zeta = \frac{g}{1+(\frac{g}{m})^2}$
 also we define velocity, V, as follow:
 **Equation 21:** $V_{t}=\beta V_{t-1}+(1-\beta)\zeta$
-in equation 21 $\beta$ is a positive real number which $0<\beta<1$. $V_{t}$ is $V$ value in current update step and $V_{t-1}$ is $V$ at previous update step and we initial $V$ with 0 at $t=0$. below figure shows the effect of different values of $\beta$ on loss reduction:
+in equation 21 $\beta$ is a positive real number which $0<\beta<1$. $V_{t}$ is $V$ value in current update step  (mini batch) and $V_{t-1}$ is $V$ at previous update step and we initial $V$ with 0 at $t=0$. by this definitions new update rule based on $V$ is as follow:
+**Equation 22:** $\Delta W_t=-l V_t$
+below figure shows the effect of different values of $\beta$ on loss reduction:
 ![beta_tuning_loss.png](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials/gravity_math_materials/beta_tuning_loss.png)
 
-after some experiments involving changing  $\beta$ value we find out the optimal value for $\beta$ in most cases is $0.9$ although in some cases tuning my be necessary. although moving average helped gravity in initial speed but still we can see some delay. for solving this issue we propose an alternative value of $\beta$. any specific value of $\beta$ averages over a number of previous data. actually we can find number of data included in average by below [equation](https://www.youtube.com/watch?v=NxTFlzBjS-4):
-**Equation 22:** $number \ of \ averaged \ data \approx \frac{1}{1-\beta}$
-but at the first epochs there is no enough data to be averaged. and also at the beginning of the training which $t$ is small and  $V_0=0$ the value value of equation 21 will be very small. there is a solution known as bias correction which modifies $V_t$ as follow:
-**Equation 23:** $V_{t}=\frac{\beta V_{t-1}+(1-\beta)\zeta}{1-\beta^t}$
-the logic behind equation 23 is by increasing the value of $t$ the denominator approach to $1$  and equations 23 and 21will output almost same result. but at the  beginning of the training the value of $1-\beta^t$ is small and dividing equation 21 to this small value enlarge total outcome.
-we tried to use bias correction but at large values of $\beta$ (closer to 1) we encounter overflow in our code therefore we tried to solve the problem of equation 21 at initial steps. we propose an alternative to beta as follow:
-**Equation 23:** $\hat{\beta} = \frac{\beta t+1}{t+2}$
-value of equation 23 at large $t$ will became $\beta$. but at smaller values correct the value of $\beta$. lets drive the equation 23. by choosing any $\beta$ we will average almost over $\frac{1}{1-\beta}$ data. let say we want to use a variable value of $\beta$ which increase over time and tends to $1$, therefore always average over all data, we call this variable $\hat{\beta}$. for averaging over all data at each step we want to the amount of data that we average on be t+2 because at first step $t=0$ there is 2 data $V_0$ and $V_1$. then we can write:
+after some experiments involving changing value of $\beta$, we find out the optimal value for $\beta$ in most cases is $0.9$ although may be in some special cases tuning is required. while moving average helped gravity in initial speed but still we can see some delay. for solving this issue we propose an alternative value of $\beta$. any specific value of $\beta$ averages over a number of previous data. actually we can find number of data included in average by below [equation](https://www.youtube.com/watch?v=NxTFlzBjS-4):
+**Equation 23:** $number \ of \ averaged \ data \approx \frac{1}{1-\beta}$
+but at the first epochs there is not enough data to be averaged and also at the beginning of the training, which $t$ is small and  $V_0=0$, the value value of equation 21 will be very small. there is a solution known as bias correction which modifies $V_t$ as follow:
+**Equation 24:** $V_{t}=\frac{\beta V_{t-1}+(1-\beta)\zeta}{1-\beta^t}$
+the logic behind equation 24 can be explained as follow: by increasing the value of $t$ the denominator approach to $1$ and equations 24 and 21will output almost same result. but at the  beginning of the training the value of $1-\beta^t$ is small and dividing equation 21 to this small value increase total outcome.
+we tried to use bias correction but at large values of $\beta$ (closer to 1) we encounter overflow in our code therefore we tried to solve the problem of equation 21 at initial steps with different approach. we propose an alternative to beta as follow:
+**Equation 25:** $\hat{\beta} = \frac{\beta t+1}{t+2}$
+value of $\hat{\beta}$ in equation 25 at large $t$ will tends to $\beta$ but at smaller values it will correct the value of $\beta$. lets drive the equation 25. by choosing any value of $\beta$ we will average almost over $\frac{1}{1-\beta}$ data. let say we want to use a variable value of $\beta$ which increase over time and tends to $1$, therefore always average over all data, we call this variable $\hat{\beta}$. for averaging over all data at each step we want to the amount of data that we average on be t+2 (because at $t=0$ there is 2 data $V_0$ and $V_1$). then we can write:
 $\frac{1}{1-\hat{\beta}}=t+2 \Rightarrow \hat{\beta}=\frac{t+1}{t+2}$
-by increasing amount of $t$ the value of $\beta$ tends to $1$ which will average over all data. below table show the value of $\hat{\beta}$ for different values of $t$:
+at $t=0$ the value of $\hat{\beta}$ is 0.5 which will average over 2 data ($V_0$ and $V_1$). by increasing value of $t$ the value of $\hat{\beta}$ tends to $1$ which will average over all data. below table show the value of $\hat{\beta}$ for different values of $t$:
 ![beta_1_table.png](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials\gravity_math_materials\beta_1_table.png)
-as you can see at each step the amount of data that we average on is equal to total available data. for averaging over $\frac{1}{1-\beta}$ we modify above equation as $\hat{\beta} = \frac{\beta t+1}{t+2}$ which is equation 23. now by increasing the value of $t$ the value of $\hat{\beta}$ became more and more close to $\beta$. below table shows the value of $\hat{\beta}$ for $\beta=0.5$:
-![beta_0.5_table.png](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials\gravity_math_materials\beta_0.5_table.png)
-as you can see always we average over exactly 2 data. but for larger values of $\beta$ it takes more steps to $\hat{\beta}$ became closer to $\beta$:
-![beta_0.75_table.png](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials\gravity_math_materials\beta_0.75_table.png)
-and for our recommended value of $\beta$, $0.9$, the behaviour of $\hat{\beta}$ is as follow:
-![beta_0.9_table.png](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials\gravity_math_materials\beta_0.9_table.png)
-in addition to modifying $\beta$ in equation 21 we came out with another solution for increasing the speed of optimizer at early steps  by using non-zero initial $V$.  instead of zero we initialized $V$ with random numbers with normal distribution.
+as you can see at each step the amount of data that we average on is equal to total available data. for averaging over $\frac{1}{1-\beta}$ we modify above equation as $\hat{\beta} = \frac{\beta t+1}{t+2}$ which is equation 25. now by increasing the value of $t$ the value of $\hat{\beta}$ tends to $\beta$. below figure demonstrate behavior of $\hat{\beta}$ for different values of $\beta$.
+![Beta hat behavior](https://github.com/dariush-bahrami/gravity.optimizer/raw/master/figures/jpg/beta_hat_behavior.jpg)
+
+in addition to modifying $\beta$ in equation 21 we came out with another solution for increasing the speed of optimizer at early steps by using non-zero initial $V$.  instead of zero we initialized $V$ with random numbers with normal distribution with mean $\mu$ as 0 and standard deviation as follow:
+**Equation 26:**  $\sigma=\frac{\alpha}{l}$
+lets look closely at first update step:
+**Equation 27:** $\Delta W_0 = -l (0.5 V_0 + 0.5 \zeta_0)$
+we can think about this equation as two separated part first part is $\Delta W_{V_0}$ which is due to initial $V$ and second part $\Delta W_{\zeta_0}$ which is due to gradient term. we cannot do anything about gradient term and this part is determined by many different parameters. but we can tweak $\Delta W_{V_0}$for better initial loss reduction speed. first lets define this term as follow:
+**Equation 28:** $\Delta W_{V_0} = -0.5 l V_0$
+by choosing $V_0=0$ we give total control of optimizer to unknown part of equation 27 which is $\Delta W_{\zeta_0}$. for a normal distributed set of random numbers the 68% of random values are less than standard deviation $\sigma$ and 95% of random number are less than $2\sigma$ and 99.7% of numbers are less than $3\sigma$ there for by choosing $\sigma$ we define the range of initial steps for different parameters.
+![Normal Distribution](https://blogs.sas.com/content/iml/files/2019/07/rule6895.png)
+by choosing any $\sigma$ 68% of parameters are $|\Delta W_{V_0}|<\frac{l \sigma}{2}$. we define the numerator of right side of this inequality as a new hyper-parameter called  $\alpha$ for controlling value of initial steps:
+**Equation 29:** $\alpha = l \sigma$
+in fact the equation 26 is same different form of equation 29. by experimenting with different values of $\alpha$ we found $\alpha=0.05$ satisfying for majority of models.
+
+## Conclusion
+We propose new optimizer for deep learning based on back-propagation from a kinematic point of view perspective. the summary of our algorithm is:
 
 
+**Require:** $l$: Learning Rate _Recommended Value: 0.1_
+**Require:** $\alpha$: Initial Step Size due to $V$ _Recommended Value: 0.05_
+**Require:** $\beta$: Moving Average Rate $\in [0, 1]$   _Recommended Value: 0.9_
+**Require:** $t_{max}$: maximum number of update steps
+
+for each parameter:
+   $\mu \gets 0$
+   $\sigma \gets \frac{\alpha}{l}$
+   $V_0 \gets{\mathcal {N}}(\mu,  \sigma)$
+ 
+$t \gets 0$
+while t<$t_{max}$:
+    $t \gets t+1$
+    $\hat{\beta} \gets \frac{\beta t +1}{t + 2}$
+    for each weight matrix $W$:
+        $G \gets \frac{\partial{J}}{\partial{w}}$ _gradient of objective function J w.r.t W _
+        $m \gets \frac{1}{max(abs(G))}$
+        $\zeta \gets G \oslash (1+(G \oslash m)^2)$
+        $V _t \gets \beta V_{t-1} + (1-\beta)\zeta$
+        $W \gets W - l V_t$
+        note: $\oslash$ is element wise division Hadamard division_
+        
+
+for convenient and we prepared keras implementation of gravity optimizer as follow:
+```python
+class Gravity(tf.keras.optimizers.Optimizer):
+    def __init__(self, learning_rate=0.1, alpha=0.01, beta=0.9, name="Gravity", **kwargs):
+        super(Gravity, self).__init__(name, **kwargs)
+        self._set_hyper('learning_rate', kwargs.get('lr', learning_rate))
+        self._set_hyper('decay', self._initial_decay)
+        self._set_hyper('alpha', alpha)
+        self._set_hyper('beta', beta)
+        self.epsilon = 1e-7
+    def _create_slots(self, var_list):
+        alpha = self._get_hyper("alpha")
+        stddev = alpha/self.learning_rate
+        initializer = tf.keras.initializers.RandomNormal(mean=0.0, stddev=stddev, seed=None)
+        # initializer = 'zeros'
+        for var in var_list:
+            self.add_slot(var, "velocity", initializer=initializer)
+
+    @tf.function
+    def _resource_apply_dense(self, grad, var):
+        # Get Data
+        var_dtype = var.dtype.base_dtype
+        lr_t = self._decayed_lr(var_dtype) # handle learning rate decay
+        beta_hat = self._get_hyper("beta", var_dtype)
+        t = tf.cast(self.iterations, float)
+        beta = (beta_hat*t + 1 )/(t + 2)
+        velocity = self.get_slot(var, "velocity")
+
+        # Calculations
+        max_step_grad = 1/tf.math.reduce_max(tf.math.abs(grad))
+        gradient_term = grad / (1 + (grad/max_step_grad)**2)
+
+        # update variables
+        updated_velocity = velocity.assign(beta*velocity + (1-beta)*gradient_term) 
+        updated_var = var.assign(var - lr_t*updated_velocity)       
+        
+        # updates = [updated_var, updated_velocity]
+        # return tf.group(*updates)
+    def _resource_apply_sparse(self, grad, var):
+        raise NotImplementedError
+    def get_config(self):
+        config = super(Gravity, self).get_config()
+        config.update({
+            'learning_rate': self._serialize_hyperparameter('learning_rate'),
+            'decay': self._serialize_hyperparameter('decay'),
+            'alpha': self._serialize_hyperparameter('alpha'),
+            'beta': self._serialize_hyperparameter('beta'),
+            'epsilon': self.epsilon,
+        })
+        return config
+```
+
+
+
+   
 
 
