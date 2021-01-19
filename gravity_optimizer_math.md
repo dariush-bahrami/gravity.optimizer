@@ -142,7 +142,7 @@ while t<$t_{max}$:
         $\zeta \gets G \oslash (1+(G \oslash m)^2)$
         $V _t \gets \beta V_{t-1} + (1-\beta)\zeta$
         $W \gets W - l V_t$
-        note: $\oslash$ is element wise division Hadamard division_
+        note: $\oslash$ is element wise division also known as Hadamard division_
         
 
 for convenient and we prepared keras implementation of gravity optimizer as follow:
