@@ -1,6 +1,6 @@
 # Gravity Optimizer
 Gravity is a kinematic approach to optimization based on back-propagation. The algorithm demonstrated below:
-![Gravity Optimizer Algorithm](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials/Gravity%20Optimizer%20-%20Algorithm.png)
+![Gravity Optimizer Algorithm](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials/Gravity%20Optimizer%20-%20Algorithm%20-%20Readme%20version.png)
 
 For ease of use a keras implementation is available:
 ```python
