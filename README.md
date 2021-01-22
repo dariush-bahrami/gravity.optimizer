@@ -1,5 +1,8 @@
 # Gravity Optimizer
-Gravity is a physical approach to optimization based on back-propagation. For ease of use a keras implementation is available:
+Gravity is a kinematic approach to optimization based on back-propagation. The algorithm demonstrated below:
+![Gravity Optimizer Algorithm]()
+
+For ease of use a keras implementation is available:
 ```python
 import tensorflow as tf
 
