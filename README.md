@@ -1,9 +1,9 @@
 # Gravity Optimizer
-Gravity is a kinematic approach to optimization based on gradients. For details of the proposed optimizer read (paper preprint)[https://github.com/dariush-bahrami/gravity.optimizer/raw/master/paper/gravity_optimizer_arxiv_preprint.pdf]. The Gravity algorithm depicted below:
+Gravity is a kinematic approach to optimization based on gradients. For details of the proposed optimizer read paper preprint. The Gravity algorithm depicted below:
 
 ![Gravity Optimizer Algorithm](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials/Gravity%20Optimizer%20-%20Algorithm%20-%20Readme%20version.png)
 
-For ease of use a (keras)[https://keras.io/] implementation of the algorithm is available:
+For ease of use a keras implementation of the algorithm is available:
 ```python
 class Gravity(tf.keras.optimizers.Optimizer):
     def __init__(self,
@@ -69,4 +69,4 @@ class Gravity(tf.keras.optimizers.Optimizer):
         return config
 ```
 
-* Benchmarks are available at ( _gravity_optimizer_notebook.ipynb_)[https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/gravity_optimizer_notebook.ipynb]
+* Benchmarks are available at _gravity_optimizer_notebook.ipynb_
