@@ -1,10 +1,7 @@
-# Gravity Optimizer
-Gravity is a kinematic approach to optimization based on gradients. For details of the proposed optimizer read paper preprint. The Gravity algorithm depicted below:
+"""Keras Implementation of Gravity Optimizer"""
+import tensorflow as tf
 
-![Gravity Optimizer Algorithm](https://raw.githubusercontent.com/dariush-bahrami/gravity.optimizer/master/materials/Gravity%20Optimizer%20-%20Algorithm%20-%20Readme%20version.png)
 
-For ease of use a keras implementation of the algorithm is available:
-```python
 class Gravity(tf.keras.optimizers.Optimizer):
     def __init__(self,
                  learning_rate=0.1,
@@ -67,6 +64,3 @@ class Gravity(tf.keras.optimizers.Optimizer):
             self.epsilon,
         })
         return config
-```
-
-* Benchmarks are available at _Gravity Optimizer Benchmarks (Tensorflow).ipynb_ Notebook

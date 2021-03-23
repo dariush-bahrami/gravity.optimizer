@@ -140,7 +140,8 @@ def get_dataset_fashion_mnist(verbose=True, show_images=True):
         (x_train_fashion_mnist.shape[0], 28, 28, 1)).astype('float32')
     x_test_fashion_mnist = x_test_fashion_mnist.reshape(
         (x_test_fashion_mnist.shape[0], 28, 28, 1)).astype('float32')
-    x_train_fashion_mnist, x_test_fashion_mnist = x_train_fashion_mnist / 255.0, x_test_fashion_mnist / 255.0
+    x_train_fashion_mnist, x_test_fashion_mnist = x_train_fashion_mnist / \
+        255.0, x_test_fashion_mnist / 255.0
     input_shape_fashion_mnist = x_train_fashion_mnist.shape[1:]
     classes_fashion_mnist = 10
     if verbose:
