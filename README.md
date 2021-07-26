@@ -71,7 +71,7 @@ class Gravity(tf.keras.optimizers.Optimizer):
 
 * Benchmarks are available at _Gravity Optimizer Benchmarks (Tensorflow).ipynb_ Notebook
 ---
-PyTorch implementation of Gravity optimizer (*added at July 2021*):
+PyTorch implementation of Gravity optimizer (*added in July 2021*):
 
 ```python
 import torch
